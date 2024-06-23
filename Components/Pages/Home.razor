@@ -1,0 +1,117 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@inject OpenAIManager OpenAIManager
+
+<PageTitle>Home</PageTitle>
+
+<h1>Plant Contoso</h1>
+
+Click on a camera to take a picture and analyse it
+
+<br />
+
+<div style="display: flex;">
+    <div style="position: relative; display: inline-block; flex: 1;">
+        <img src="resources/Designer.jpeg" alt="Designer Image" style="width: 100%;" />
+        <div style="position: absolute; top: 10px; left: 10px;">
+            <button @onclick="() => ToggleTextArea(1)" style="background: none; border: none;">
+                <img src="resources/camera.jpeg" alt="CarEquipment" style="width: 100px; height: 100px;" />
+            </button>
+        </div>
+        <div style="position: absolute; top: 200px; left: 10px;">
+            <button @onclick="() => ToggleTextArea(2)" style="background: none; border: none;">
+                <img src="resources/camera.jpeg" alt="WorkersStation" style="width: 100px; height: 100px;" />
+            </button>
+            <button @onclick="() => ToggleTextArea(3)" style="background: none; border: none;">
+                <img src="resources/camera.jpeg" alt="DeskEquipment" style="width: 100px; height: 100px;" />
+            </button>
+        </div>
+    </div>
+    <div style="flex: 1; padding-left: 20px;">
+        @if (showTextArea)
+        {
+            <img src="@imagePath" alt="Captured Image" style="width: 100%;" />
+            <br />
+            <br />
+            <textarea>@message</textarea>
+            <br />
+            <br />
+            <button @onclick="Analyze">Analyze</button>
+            <br />
+        }
+
+        @if (showResponse)
+        {
+            <br/>
+            <text>@response</text>
+        }
+    </div>
+</div>
+
+@code {
+    private bool showTextArea = false;
+    private bool showResponse = false;
+    private int buttonClicked = 0;
+    private string message = "clicked button";
+    private string imagePath = "";
+    private string response = "";
+
+    private void ToggleTextArea(int buttonNumber)
+    {
+        if (showTextArea && buttonClicked == buttonNumber)
+        {
+            showTextArea = false;
+            buttonClicked = 0;
+            imagePath = "";
+        }
+        else
+        {
+            showTextArea = true;
+            buttonClicked = buttonNumber;
+
+            switch (buttonNumber)
+            {
+                case 1:
+                    message = @"Security checks:
+- helmets worn by workers
+- gloves worn by workers
+- glasses worn by workers
+- car correctly held by robot arms
+Object to be present:
+- instruction checks attached on the car
+- front wheels ready to be placed
+- windshield already mounted on the car
+- lights already mounted on the vehicle
+- red robot ready under the car to land it";
+                    break;
+                case 2:
+                    message = @"Security checks:
+- workers are wearing security gloves
+- workers are wearing security glasses. If not sure, say it
+- in all stations present exactly two workers. True or false value";
+                    break;
+                default:
+                    message = @"Object to be present:
+- security helmet
+- security gloves
+- hammer
+- drill
+- wrenches
+- screwdrivers
+- creeper";
+                    break;
+            }
+
+            imagePath = $"resources/picture_{buttonNumber}.jpg";
+        }
+        response = "";
+        showResponse = false; // Hide response when toggling text area
+    }
+
+    private async void Analyze()
+    {
+        response = await OpenAIManager.GetCompletionV2(message);
+        showResponse = true;
+        StateHasChanged();
+    }
+}
