@@ -128,8 +128,25 @@ Object to be present:
     {
         response = String.Empty;
         showResponse = true;
-        response = await OpenAIManager.GetCompletionV2(message, imagePath);
-        formattedResponse = FormatJson(response);
+        bool isMessageCorrectlyParsed = false;
+
+        while(!isMessageCorrectlyParsed)
+        {
+            try
+            {
+                response = await OpenAIManager.GetCompletionV2(message, imagePath);
+                formattedResponse = FormatJson(response);
+                if(formattedResponse != String.Empty)
+                {
+                    isMessageCorrectlyParsed = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error in parsing, retrying...");
+            }
+        }
+
         response = formattedResponse;
         //showResponse = true;
         StateHasChanged();
@@ -137,13 +154,21 @@ Object to be present:
 
     private string FormatJson(string json)
     {
-        string j = json.Replace("`", "");
-        j = j.Substring(4);
-        var options = new JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
-        var jsonElement = JsonSerializer.Deserialize<JsonElement>(j);
-        return JsonSerializer.Serialize(jsonElement, options);
+        try
+        {
+            string j = json.Replace("`", "");
+            j = j.Substring(4);
+            var options = new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                };
+            var jsonElement = JsonSerializer.Deserialize<JsonElement>(j);
+            return JsonSerializer.Serialize(jsonElement, options);
+        }
+        catch(Exception exc)
+        {
+            Console.WriteLine($"Error in parsing response: {json}");
+            return String.Empty;
+        }
     }
 }
