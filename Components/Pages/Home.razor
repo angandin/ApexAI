@@ -129,12 +129,16 @@ Object to be present:
         response = String.Empty;
         showResponse = true;
         bool isMessageCorrectlyParsed = false;
+        int maxRetries = 5;
+        int counter = 0;
 
-        while(!isMessageCorrectlyParsed)
+        while(!isMessageCorrectlyParsed && counter < maxRetries)
         {
             try
             {
+                counter++;
                 response = await OpenAIManager.GetCompletionV2(message, imagePath);
+                response = "asd";
                 formattedResponse = FormatJson(response);
                 if(formattedResponse != String.Empty)
                 {
@@ -147,8 +151,14 @@ Object to be present:
             }
         }
 
-        response = formattedResponse;
-        //showResponse = true;
+        if (isMessageCorrectlyParsed)
+        {
+            response = formattedResponse;
+        }
+        else
+        {
+            response = "An error occurred, please try in few seconds";            
+        }
         StateHasChanged();
     }
 
