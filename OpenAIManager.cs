@@ -43,7 +43,9 @@ namespace ApexAI
             var chat = _kernel.GetRequiredService<IChatCompletionService>();
             var history = new ChatHistory();
 
-            history.AddSystemMessage("You are an AI assistant that helps workstation manager, in a manufacturing plant, to identify from a picture all security risks and if all tools and objects are at their place.\r\nAs input you will receive a picture and a set of tools each that must be appear in a specific place, and all security compliance to check.\r\nAs output, answer with only a json with values based on the check to be performed.");
+            history.AddSystemMessage("You are an AI assistant that helps workstation manager, in a manufacturing plant, to identify from a picture all security risks and if all tools and" +
+                " objects are at their place.\r\nAs input you will receive a picture and a set of tools each that must be appear in a specific place, and all security compliance to check." +
+                "\r\nAs output, answer ALWAYS with only a json with values based on the check to be performed.");
             var imageContent = new ImageContent();
             imageContent.Uri = new Uri($"https://github.com/angandin/ApexAI/blob/master/wwwroot/{imagePath}?raw=true");
 

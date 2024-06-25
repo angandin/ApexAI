@@ -7,7 +7,7 @@
 
 <h1>Plant Contoso</h1>
 
-Click on a camera to take a picture and analyse it
+Click on a box to take a picture and analyse it
 
 <br />
 
@@ -36,7 +36,7 @@ Click on a camera to take a picture and analyse it
             <img src="@imagePath" alt="Captured Image" style="width: @pictureWidth;" />
             <br />
             <br />
-            <textarea style="width: 100%; height: @textAreaHeight;">@message</textarea>
+            <textarea @bind=message style="width: 100%; height: @textAreaHeight;"></textarea>
             <br />
             <br />
             <button @onclick="Analyze">Analyze</button>
@@ -109,10 +109,10 @@ Object to be present:
 - security helmet
 - security gloves
 - hammer
-- drill
 - wrenches
+- allen wrenches
 - screwdrivers
-- creeper";
+- ammeter";
                     textAreaHeight = "200px";
                     pictureWidth = "85%";
                     break;
