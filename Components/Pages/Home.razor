@@ -138,7 +138,6 @@ Object to be present:
             {
                 counter++;
                 response = await OpenAIManager.GetCompletionV2(message, imagePath);
-                response = "asd";
                 formattedResponse = FormatJson(response);
                 if(formattedResponse != String.Empty)
                 {
